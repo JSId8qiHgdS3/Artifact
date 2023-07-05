@@ -37,18 +37,23 @@ real_conf = {}
 # model prediction related
 GRAPHS = "AST_CFG_PDG_CAST_DEP"
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+if str(DEVICE) == "cpu":
+   MAPLOC = 'cpu'
+else:
+   MAPLOC = 'cuda:0'
+
 V = torch.load("../src/vocab-2.pt")
 embedding = torch.load("../src/emb-2.pt")
 dictionary = V.get_stoi()
 
 time_predictor = model.HeteroGNN(GRAPHS.split('_'))
-time_predictor.load_state_dict(torch.load("../src/time_finetune.pt"))
+time_predictor.load_state_dict(torch.load("../src/time_finetune.pt", map_location=MAPLOC))
 print("Runtime time_predictor {} is loaded.".format("../src/time_finetune.pt"))
 time_predictor.to(DEVICE)
 time_predictor.eval()
 
 error_predictor = model.HeteroGNN(GRAPHS.split('_'))
-error_predictor.load_state_dict(torch.load("../src/error_finetune.pt"))
+error_predictor.load_state_dict(torch.load("../src/error_finetune.pt", map_location=MAPLOC))
 print("Error error_predictor {} is loaded.".format("../src/error_finetune.pt"))
 error_predictor.to(DEVICE)
 error_predictor.eval()

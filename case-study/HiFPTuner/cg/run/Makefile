@@ -1,3 +1,3 @@
 clean:
-	rm *.out *.txt config_temp.json
+	rm -f *.out *.txt config_temp.json
 
